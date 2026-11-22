@@ -511,3 +511,115 @@ html { scroll-behavior: auto !important; }
   .exercise-card { padding: 10px 7px 37px !important; border-radius: 13px !important; }
   .exercise-card .exercise-done-button { left:7px !important; right:7px !important; bottom:7px !important; min-height:24px !important; }
 }
+
+/* ===== VEWORK HOME DAY CARDS: STATIC, RESPONSIVE, FULL-WIDTH ===== */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.app-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 clamp(14px, 3vw, 36px) 24px;
+}
+.day-grid {
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto;
+  align-content: start;
+  gap: clamp(10px, 1.5vw, 18px);
+  padding-top: clamp(18px, 3vw, 28px);
+  flex: 0 0 auto;
+}
+.day-card {
+  width: 100%;
+  min-width: 0;
+  min-height: clamp(112px, 13vw, 148px);
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 16px;
+  background: rgba(255,255,255,.045) !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  appearance: none;
+  -webkit-appearance: none;
+  transform: none !important;
+  filter: none !important;
+}
+.day-card:hover,
+.day-card:active,
+.day-card:focus,
+.day-card:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: rgba(255,255,255,.045) !important;
+  color: var(--text) !important;
+  transform: none !important;
+  filter: none !important;
+}
+.day-card.is-day-complete,
+.day-card.is-day-complete:hover,
+.day-card.is-day-complete:active,
+.day-card.is-day-complete:focus {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: rgba(255,255,255,.045) !important;
+}
+.day-card .completion-overlay {
+  border: 0 !important;
+  transition: none !important;
+  background: rgba(5,5,5,.76) !important;
+}
+.day-card .day-index,
+.day-card strong,
+.day-card .day-sub {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#homeView {
+  width: 100%;
+  min-width: 0;
+}
+.topbar {
+  width: 100%;
+}
+@media (max-width: 760px) {
+  .app-shell {
+    padding: 0 14px 20px;
+  }
+  .day-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: auto !important;
+    gap: 12px !important;
+    padding-top: 18px !important;
+  }
+  .day-card {
+    min-height: 118px !important;
+    padding: 14px 10px !important;
+    border-radius: 14px !important;
+    gap: 6px !important;
+  }
+  .day-card strong {
+    font-size: clamp(17px, 4.5vw, 20px) !important;
+  }
+  .day-index {
+    font-size: 9px !important;
+    letter-spacing: 1.1px !important;
+  }
+  .day-sub {
+    font-size: clamp(9px, 2.8vw, 10px) !important;
+    line-height: 1.4 !important;
+  }
+}
+@media (max-width: 360px) {
+  .app-shell { padding-left: 12px; padding-right: 12px; }
+  .day-grid { gap: 10px !important; }
+  .day-card { min-height: 110px !important; padding: 12px 8px !important; }
+  .day-card strong { font-size: 17px !important; }
+  .day-sub { font-size: 9px !important; }
+}
