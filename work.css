@@ -1,0 +1,513 @@
+*{box-sizing:border-box}
+:root{color-scheme:dark;--bg:#050505;--panel:rgba(255,255,255,.035);--line:rgba(255,255,255,.105);--muted:#858585;--text:#f2f2f2;--accent:#c8ff68}
+html{min-height:100%;background:#050505;scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:#050505;color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+button{font:inherit}
+.app-shell{width:min(1050px,100%);margin:0 auto;padding:0 34px 28px}
+.topbar{height:70px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,.07)}
+.brand{font:700 21px "Space Grotesk",sans-serif;letter-spacing:-1.2px;color:#f5f5f5;text-decoration:none}
+.brand span{color:var(--accent);padding-left:3px}
+.view{animation:appear .28s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.day-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.day-card{position:relative;min-width:0;min-height:128px;text-align:left;padding:16px;border:1px solid var(--line);border-radius:18px;color:var(--text);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.012));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.045);cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.day-card:hover{border-color:rgba(200,255,104,.35);background:rgba(255,255,255,.065)}
+.day-card:focus-visible,.back-button:focus-visible,.clear-button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.day-index{display:block;color:var(--accent);font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:14px}
+.day-card strong{display:block;font:600 22px "Space Grotesk",sans-serif;letter-spacing:-.6px;margin-bottom:6px}
+.day-sub{display:block;color:var(--muted);font-size:11px;line-height:1.45;padding-right:13px}
+.card-arrow{position:absolute;right:17px;bottom:15px;color:#a4a4a4;font-size:16px}
+.home-actions{display:flex;justify-content:center;margin:30px 0 0}
+.clear-button{border:1px solid rgba(255,255,255,.15);border-radius:30px;padding:11px 18px;background:rgba(255,255,255,.025);color:#aaa;font-size:9px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:.18s}
+.clear-button:hover{color:var(--accent);border-color:rgba(200,255,104,.4)}
+.footer{display:flex;justify-content:center;text-align:center;color:#777;font-size:10px;font-weight:600;letter-spacing:1.5px;margin-top:30px;padding:18px 0 4px}
+.detail-view{padding-top:18px}
+.back-button{flex:0 0 auto;border:0;background:none;color:#929292;cursor:pointer;font-size:9px;font-weight:700;letter-spacing:1.4px;padding:6px 0}
+.back-button:hover{color:var(--accent)}
+.section-heading-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 9px}
+.section-heading-row .section-title{margin:0}
+.detail-heading{text-align:center;padding:19px 0 23px}
+.detail-heading>p:first-child{font-size:9px;font-weight:700;letter-spacing:1.7px;color:var(--accent);margin:0 0 7px}
+.detail-heading h1{font:600 24px "Space Grotesk",sans-serif;letter-spacing:-.4px;margin:0}
+.detail-heading>p:last-child{font-size:10px;color:#858585;margin:5px 0 0}
+.workout-content{display:flex;flex-direction:column;gap:20px}
+.exercise-section{min-width:0}
+.section-title{font:600 14px "Space Grotesk",sans-serif;color:#aaa;letter-spacing:.2px;margin:0 0 9px}
+.exercise-card{display:flex;align-items:center;gap:14px;position:relative;min-height:58px;padding:10px 14px;margin-bottom:6px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:linear-gradient(120deg,rgba(255,255,255,.045),rgba(255,255,255,.012));cursor:pointer;transition:border-color .16s,background .16s}
+.exercise-card:hover{border-color:rgba(255,255,255,.17)}
+.exercise-name-wrap{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.exercise-name{font-size:13px;font-weight:600;color:#e8e8e8;line-height:1.35}
+.exercise-target{font-size:10px;color:#858585;letter-spacing:.2px}
+.exercise-check{position:absolute;opacity:0;width:1px;height:1px}
+.tick-ui{width:23px;height:23px;flex:0 0 23px;border:1px solid rgba(255,255,255,.25);border-radius:7px;background:rgba(255,255,255,.025);display:grid;place-items:center;transition:.16s}
+.tick-ui:after{content:"";width:5px;height:10px;border:solid #111;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .16s}
+.exercise-card.is-complete{border-color:rgba(200,255,104,.28);background:rgba(200,255,104,.045)}
+.exercise-card.is-complete .exercise-name{text-decoration:line-through;text-decoration-color:#777;color:#858585}
+.exercise-card.is-complete .tick-ui{background:var(--accent);border-color:var(--accent);box-shadow:0 0 13px rgba(200,255,104,.14)}
+.exercise-card.is-complete .tick-ui:after{transform:rotate(45deg) scale(1)}
+.detail-footer{margin-top:27px}
+[hidden]{display:none!important}
+@media(max-width:760px){.app-shell{padding:0 20px 22px}.topbar{height:61px}.day-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.day-card{min-height:120px;padding:14px;border-radius:16px}.day-card strong{font-size:20px}.day-index{margin-bottom:17px}.day-sub{font-size:10px}.card-arrow{right:14px;bottom:12px}.detail-view{padding-top:14px}.detail-heading{padding:17px 0 20px}}
+@media(max-width:360px){.app-shell{padding-left:14px;padding-right:14px}.day-card{padding:13px;min-height:130px}.day-card strong{font-size:18px}.day-sub{font-size:9px}.exercise-name{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ===== VEWORK FINAL SPACING & BOTTOM ALIGNMENT ===== */
+
+/* Full screen layout */
+.app-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.view {
+  flex: 1;
+}
+
+/* Homepage layout */
+#homeView {
+  display: flex;
+  flex-direction: column;
+}
+
+/* More breathing space between VEWORK heading and boxes */
+.day-grid {
+  padding-top: 28px;
+  gap: 17px;
+}
+
+/* Clean and balanced day cards */
+.day-card {
+  min-height: 138px;
+  padding: 18px;
+}
+
+.day-index {
+  margin-bottom: 18px;
+}
+
+/* Clear All Ticks moves towards bottom */
+.home-actions {
+  margin-top: auto;
+  padding-top: 28px;
+  justify-content: center;
+}
+
+/* Footer stays at the bottom */
+.footer {
+  margin-top: 14px;
+  padding: 20px 0 4px;
+}
+
+/* Mobile spacing */
+@media (max-width: 760px) {
+  .day-grid {
+    gap: 15px;
+    padding-top: 25px;
+  }
+
+  .day-card {
+    min-height: 130px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .day-grid {
+    gap: 12px;
+    padding-top: 22px;
+  }
+}
+
+
+/* ===== REFINED HOME CARDS + COMPLETION STATE ===== */
+.day-grid { flex:1; grid-template-rows:repeat(3,minmax(112px,1fr)); align-content:stretch; gap:14px; padding-top:22px; min-height:0; }
+.day-card { min-height:112px; padding:15px 15px 14px; border-radius:17px; overflow:hidden; }
+.day-index { margin-bottom:13px; }
+.day-card strong { font-size:20px; margin-bottom:5px; }
+.day-sub { font-size:10px; line-height:1.4; }
+.completion-overlay { position:absolute; inset:0; z-index:2; display:flex; align-items:center; justify-content:center; padding:10px; background:rgba(5,5,5,.76); color:var(--accent); font:700 10px "Space Grotesk",sans-serif; letter-spacing:2px; text-align:center; opacity:0; pointer-events:none; transition:opacity .22s ease; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+.day-card.is-day-complete { border-color:rgba(200,255,104,.26); background:linear-gradient(145deg,rgba(200,255,104,.035),rgba(255,255,255,.01)); }
+.day-card.is-day-complete .completion-overlay { opacity:1; }
+.day-card.is-day-complete .day-index,.day-card.is-day-complete strong,.day-card.is-day-complete .day-sub,.day-card.is-day-complete .card-arrow { opacity:.22; }
+.home-actions { padding-top:20px; }
+.footer { padding-top:15px; }
+@media(max-width:760px){.day-grid{grid-template-rows:repeat(3,minmax(108px,1fr));gap:13px;padding-top:20px}.day-card{min-height:108px;padding:13px;border-radius:15px}.day-index{margin-bottom:12px}.day-card strong{font-size:19px}.home-actions{padding-top:18px}}
+@media(max-width:360px){.day-grid{grid-template-rows:repeat(3,minmax(102px,1fr));gap:11px;padding-top:18px}.day-card{min-height:102px;padding:12px}.day-card strong{font-size:18px}}
+
+
+/* ===== CLEAN, CENTERED, NO-ANIMATION FINAL PASS ===== */
+.view, .day-card, .clear-button, .exercise-card, .tick-ui, .tick-ui:after, .completion-overlay { animation:none !important; transition:none !important; }
+.day-card { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:7px; padding:15px 12px; }
+.day-index { margin:0 !important; }
+.day-card strong { margin:0 !important; }
+.day-sub { padding:0 !important; max-width:100%; }
+.card-arrow { display:none !important; }
+.completion-overlay { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+.detail-view { min-height:0; display:flex; flex-direction:column; padding-top:16px; }
+.workout-content { flex:1; gap:26px; padding:6px 0 12px; }
+.exercise-section { padding-bottom:4px; }
+.section-heading-row { margin-bottom:13px; }
+.section-title { margin-bottom:13px; }
+.exercise-card { min-height:66px; padding:14px 16px; margin-bottom:9px; gap:16px; }
+.exercise-name-wrap { gap:6px; }
+.exercise-name { line-height:1.45; }
+.tick-ui { width:24px; height:24px; flex-basis:24px; }
+.detail-footer { margin-top:auto !important; padding:20px 0 8px !important; }
+#homeView .footer { margin-top:14px; }
+@media(max-width:760px) {
+  .day-card { min-height:0 !important; padding:12px 10px !important; gap:6px; }
+  .day-grid { gap:13px !important; padding-top:20px !important; }
+  .day-index { font-size:9px; letter-spacing:1.2px; }
+  .day-card strong { font-size:19px !important; }
+  .day-sub { font-size:10px; line-height:1.4; }
+  .workout-content { gap:24px; }
+  .exercise-card { min-height:64px; padding:13px 14px; margin-bottom:8px; }
+}
+@media(max-width:360px) {
+  .day-grid { gap:11px !important; }
+  .day-card strong { font-size:17px !important; }
+  .day-sub { font-size:9px; }
+}
+
+
+/* ===== CLEAN, STATIC, CENTERED VEWORK FINISH ===== */
+html { scroll-behavior: auto !important; }
+*, *::before, *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Center every item inside each home day card */
+.day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 7px;
+  padding: 16px 12px;
+}
+.day-index,
+.day-card strong,
+.day-sub {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.day-index { margin-bottom: 1px; }
+.day-card strong { margin-bottom: 0; }
+.day-sub { line-height: 1.45; }
+.card-arrow { display: none !important; }
+.completion-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Keep the footer at the bottom after all workout content */
+.app-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+#detailView {
+  flex: 1;
+  min-height: calc(100vh - 70px);
+  min-height: calc(100svh - 70px);
+  display: flex;
+  flex-direction: column;
+}
+#detailView[hidden] { display: none !important; }
+.workout-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 26px;
+  padding: 8px 0 18px;
+}
+.exercise-section { width: 100%; }
+.section-heading-row { margin-bottom: 15px; }
+.section-title { margin-bottom: 14px; }
+.exercise-card {
+  min-height: 66px;
+  padding: 13px 16px;
+  margin-bottom: 10px;
+}
+.detail-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 760px) {
+  #detailView {
+    min-height: calc(100vh - 61px);
+    min-height: calc(100svh - 61px);
+  }
+  .day-card { padding: 14px 10px; gap: 6px; }
+  .workout-content { gap: 24px; padding-top: 8px; padding-bottom: 16px; }
+  .exercise-card { min-height: 64px; padding: 12px 14px; margin-bottom: 9px; }
+}
+@media (max-width: 360px) {
+  .day-card { padding: 12px 8px; }
+  .exercise-card { min-height: 62px; padding: 11px 12px; }
+}
+
+/* ===== FINAL WORKOUT LAYOUT REFINEMENT ===== */
+.detail-view {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  padding-top: 10px !important;
+}
+.workout-content {
+  flex: 0 0 auto !important;
+  justify-content: flex-start !important;
+  gap: 22px !important;
+  padding: 0 0 8px !important;
+}
+.exercise-section {
+  padding-bottom: 0 !important;
+}
+.section-heading-row {
+  margin-bottom: 10px !important;
+}
+.section-title {
+  margin-bottom: 10px !important;
+}
+.exercise-card {
+  min-height: 59px !important;
+  padding: 11px 14px !important;
+  margin-bottom: 8px !important;
+  gap: 12px !important;
+  border-radius: 12px !important;
+  border-color: rgba(255,255,255,.075) !important;
+}
+.exercise-name-wrap {
+  gap: 3px !important;
+}
+.exercise-name {
+  line-height: 1.35 !important;
+}
+.tick-ui {
+  width: 22px !important;
+  height: 22px !important;
+  flex-basis: 22px !important;
+  border-radius: 6px !important;
+}
+.detail-footer {
+  margin-top: auto !important;
+  padding: 14px 0 8px !important;
+}
+@media (max-width: 760px) {
+  .detail-view {
+    padding-top: 8px !important;
+  }
+  .workout-content {
+    gap: 20px !important;
+    padding-bottom: 8px !important;
+  }
+  .exercise-card {
+    min-height: 57px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 8px !important;
+  }
+}
+@media (max-width: 360px) {
+  .workout-content { gap: 18px !important; }
+  .exercise-card { min-height: 55px !important; padding: 9px 11px !important; }
+}
+
+/* ===== VEWORK: EVEN EXERCISE SPACING & FULL-PAGE BALANCE ===== */
+.detail-view {
+  min-height: calc(100svh - 70px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.workout-content {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 18px !important;
+  padding: 8px 0 14px !important;
+}
+.exercise-section {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+}
+.exercise-section .section-heading-row,
+.exercise-section > .section-title {
+  flex: 0 0 auto !important;
+  margin-bottom: 12px !important;
+}
+.exercise-card {
+  flex: 1 1 0 !important;
+  min-height: 62px !important;
+  margin-bottom: 10px !important;
+  padding: 12px 14px !important;
+  gap: 12px !important;
+}
+.exercise-card:last-child { margin-bottom: 0 !important; }
+.exercise-name-wrap { gap: 2px !important; }
+.detail-footer { flex: 0 0 auto !important; margin-top: auto !important; }
+@media (max-width: 760px) {
+  .detail-view { min-height: calc(100svh - 61px) !important; }
+  .workout-content { gap: 16px !important; padding: 6px 0 12px !important; }
+  .exercise-card { min-height: 60px !important; margin-bottom: 9px !important; padding: 11px 13px !important; }
+}
+@media (max-width: 360px) {
+  .workout-content { gap: 14px !important; }
+  .exercise-card { min-height: 56px !important; padding: 10px 11px !important; }
+}
+
+/* ===== VEWORK: 3-COLUMN SQUARE WORKOUT TILES + DONE CONTROL ===== */
+.view, *, *::before, *::after { animation:none !important; transition:none !important; }
+.exercise-section { display:block !important; flex:0 0 auto !important; min-height:0 !important; }
+.workout-content { display:flex !important; flex-direction:column !important; justify-content:flex-start !important; flex:1 1 auto !important; gap:20px !important; padding:8px 0 14px !important; }
+.section-heading-row, .exercise-section > .section-title { margin-bottom:10px !important; }
+.exercise-grid { display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)) !important; gap:9px !important; width:100%; }
+.exercise-card { position:relative !important; display:flex !important; flex-direction:column !important; justify-content:center !important; align-items:center !important; text-align:center !important; aspect-ratio:1 / 1 !important; min-height:0 !important; height:auto !important; margin:0 !important; padding:10px 7px 25px !important; gap:5px !important; border-radius:15px !important; border:1px solid rgba(255,255,255,.11) !important; background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015)) !important; cursor:pointer; overflow:hidden; }
+.exercise-name-wrap { display:flex !important; flex:0 1 auto !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; gap:3px !important; min-width:0 !important; width:100% !important; }
+.exercise-name { font-size:11px !important; line-height:1.25 !important; font-weight:600 !important; overflow-wrap:anywhere; }
+.exercise-target { font-size:9px !important; line-height:1.2 !important; }
+.exercise-check { position:absolute !important; opacity:0 !important; width:1px !important; height:1px !important; }
+.tick-ui { position:absolute !important; left:50% !important; bottom:8px !important; transform:translateX(-50%) !important; width:15px !important; height:15px !important; flex:0 0 15px !important; border-radius:5px !important; border:1px solid rgba(255,255,255,.24) !important; background:rgba(255,255,255,.025) !important; box-shadow:none !important; }
+.tick-ui:after { width:4px !important; height:7px !important; border-width:0 1.5px 1.5px 0 !important; }
+.exercise-card.is-complete { border-color:rgba(200,255,104,.55) !important; background:rgba(200,255,104,.16) !important; }
+.exercise-card.is-complete .exercise-name { color:var(--accent) !important; text-decoration:none !important; }
+.exercise-card.is-complete .exercise-target { color:rgba(200,255,104,.7) !important; }
+.exercise-card.is-complete .tick-ui { background:var(--accent) !important; border-color:var(--accent) !important; box-shadow:none !important; }
+.exercise-card.is-complete .tick-ui:after { transform:rotate(45deg) scale(1) !important; }
+.day-done-button { display:flex !important; position:relative !important; width:100% !important; min-height:44px !important; align-items:center !important; justify-content:center !important; margin:4px 0 0 !important; padding:10px 14px !important; border:1px solid rgba(255,255,255,.16) !important; border-radius:13px !important; background:rgba(255,255,255,.035) !important; color:#c8c8c8 !important; font:700 10px "Space Grotesk",sans-serif !important; letter-spacing:1.8px !important; cursor:pointer; }
+.done-label { display:block; }
+.done-check { display:none; font-size:19px; font-weight:700; line-height:1; letter-spacing:0; }
+.day-done-button.is-complete { border-color:rgba(200,255,104,.55) !important; background:var(--accent) !important; color:#080808 !important; }
+.day-done-button.is-complete .done-label { display:none; }
+.day-done-button.is-complete .done-check { display:block; }
+.detail-footer { margin-top:auto !important; padding:18px 0 8px !important; }
+@media(max-width:760px) {
+  .exercise-grid { gap:8px !important; }
+  .exercise-card { border-radius:13px !important; padding:8px 6px 23px !important; }
+  .exercise-name { font-size:10px !important; }
+  .exercise-target { font-size:8px !important; }
+  .workout-content { gap:18px !important; padding:6px 0 10px !important; }
+  .day-done-button { min-height:42px !important; border-radius:12px !important; }
+}
+@media(max-width:360px) {
+  .exercise-grid { gap:6px !important; }
+  .exercise-card { padding:7px 5px 22px !important; border-radius:11px !important; }
+  .exercise-name { font-size:9px !important; }
+}
+
+
+/* ===== VEWORK: DONE CONTROL INSIDE EACH SQUARE TILE ===== */
+.exercise-card {
+  padding: 10px 7px 38px !important;
+}
+.exercise-card .exercise-done-button {
+  position: absolute !important;
+  left: 7px !important;
+  right: 7px !important;
+  bottom: 7px !important;
+  width: auto !important;
+  min-height: 25px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 6px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 8px !important;
+  background: rgba(255,255,255,.035) !important;
+  color: #aaa !important;
+  font: 700 8px "Space Grotesk",sans-serif !important;
+  letter-spacing: 1.15px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+.exercise-card .exercise-done-button .done-check {
+  display: none !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+.exercise-card .exercise-done-button.is-complete {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #080808 !important;
+}
+.exercise-card .exercise-done-button.is-complete .done-label { display:none !important; }
+.exercise-card .exercise-done-button.is-complete .done-check { display:block !important; }
+.exercise-card.is-complete {
+  border-color: rgba(255,255,255,.11) !important;
+  background: linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015)) !important;
+}
+.exercise-card.is-complete .exercise-name { color: var(--text) !important; text-decoration:none !important; }
+.exercise-card.is-complete .exercise-target { color: var(--muted) !important; }
+.exercise-check, .tick-ui, .day-done-button { display:none !important; }
+@media(max-width:760px) {
+  .exercise-card { padding: 8px 6px 35px !important; }
+  .exercise-card .exercise-done-button { left:6px !important; right:6px !important; bottom:6px !important; min-height:23px !important; border-radius:7px !important; }
+}
+@media(max-width:360px) {
+  .exercise-card { padding: 7px 5px 33px !important; }
+  .exercise-card .exercise-done-button { left:5px !important; right:5px !important; bottom:5px !important; min-height:22px !important; }
+}
+
+/* ===== VEWORK: BAT EMBLEM + MORE TILE BREATHING ROOM ===== */
+.exercise-card .exercise-done-button.is-complete .done-check {
+  display:block !important;
+  width:17px !important;
+  height:10px !important;
+  font-size:0 !important;
+  line-height:0 !important;
+  background:#080808 !important;
+  clip-path:polygon(0% 38%, 13% 18%, 27% 0%, 37% 25%, 50% 12%, 63% 25%, 73% 0%, 87% 18%, 100% 38%, 88% 46%, 76% 39%, 65% 65%, 50% 48%, 35% 65%, 24% 39%, 12% 46%) !important;
+  border:0 !important;
+  color:transparent !important;
+}
+.exercise-grid { gap:12px !important; }
+@media(max-width:760px) {
+  .exercise-grid { gap:11px !important; }
+}
+@media(max-width:360px) {
+  .exercise-grid { gap:9px !important; }
+}
+
+/* ===== VEWORK: TWO-COLUMN PREMIUM TILE LAYOUT ===== */
+.exercise-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+.exercise-card {
+  aspect-ratio: 1 / 1 !important;
+  padding: 14px 10px 42px !important;
+  border-radius: 16px !important;
+}
+.exercise-card .exercise-done-button {
+  left: 9px !important;
+  right: 9px !important;
+  bottom: 9px !important;
+  min-height: 27px !important;
+  border-radius: 9px !important;
+}
+@media (max-width:760px) {
+  .exercise-grid { gap: 15px !important; }
+  .exercise-card { padding: 12px 9px 40px !important; border-radius: 15px !important; }
+  .exercise-card .exercise-done-button { left:8px !important; right:8px !important; bottom:8px !important; min-height:26px !important; }
+}
+@media (max-width:360px) {
+  .exercise-grid { gap: 12px !important; }
+  .exercise-card { padding: 10px 7px 37px !important; border-radius: 13px !important; }
+  .exercise-card .exercise-done-button { left:7px !important; right:7px !important; bottom:7px !important; min-height:24px !important; }
+}

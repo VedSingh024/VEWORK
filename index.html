@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="VEWORK weekly workout checklist">
+  <title>VEWORK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="work.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" onclick="showHome();return false;">VEWORK<span>•</span></a>
+    </header>
+
+    <section id="homeView" class="view">
+      <section class="day-grid" aria-label="Workout days">
+        <button class="day-card" data-day="monday"><span class="day-index">01 / PUSH</span><strong>Monday</strong><span class="day-sub">Chest · Shoulders · Triceps</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+        <button class="day-card" data-day="tuesday"><span class="day-index">02 / CARDIO</span><strong>Tuesday</strong><span class="day-sub">Cardio + Core</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+        <button class="day-card" data-day="wednesday"><span class="day-index">03 / PULL</span><strong>Wednesday</strong><span class="day-sub">Back · Biceps</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+        <button class="day-card" data-day="thursday"><span class="day-index">04 / CARDIO</span><strong>Thursday</strong><span class="day-sub">Cardio + Core</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+        <button class="day-card" data-day="friday"><span class="day-index">05 / LEGS</span><strong>Friday</strong><span class="day-sub">Leg training</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+        <button class="day-card" data-day="saturday"><span class="day-index">06 / CARDIO</span><strong>Saturday</strong><span class="day-sub">Cardio + Core</span><span class="completion-overlay" aria-hidden="true">COMPLETED</span></button>
+      </section>
+
+      <div class="home-actions">
+        <button id="clearChecks" class="clear-button" type="button">CLEAR ALL TICKS</button>
+      </div>
+      <footer class="footer">VEWORK © 2026</footer>
+    </section>
+
+    <section id="detailView" class="view detail-view" hidden>
+      <div id="workoutContent" class="workout-content"></div>
+      <footer class="footer detail-footer">VEWORK © 2026</footer>
+    </section>
+  </main>
+
+<script>
+const plan = {
+  monday:{title:"Monday",tag:"DAY 01 / PUSH",subtitle:"Push · Chest, shoulders and triceps",sections:[
+    {title:"Bench press",items:[["Incline","15 × 3"],["Flat","15 × 3"],["Decline","15 × 3"]]},
+    {title:"Exercises",items:[["Peck fly","15 × 3"],["Overhead shoulder press","15 × 3"],["Lateral raises","15 × 3"],["Rope tricep pushdown","15 × 3"],["Overhead tricep extension","15 × 3"]]}
+  ]},
+  tuesday:{title:"Tuesday",tag:"DAY 02 / CARDIO + CORE",subtitle:"Cardio + Core",sections:[
+    {title:"Cardio · 25–30 min",items:[["Brisk walking","25–30 min"],["Cycling","25–30 min"],["Cross trainer","25–30 min"]]},
+    {title:"Core · 3 rounds",items:[["Crunches","20 reps"],["Leg Raises","15 reps"],["Plank","30–40 sec"],["Russian Twists","20 reps"]]}
+  ]},
+  wednesday:{title:"Wednesday",tag:"DAY 03 / PULL",subtitle:"Pull · Back and biceps",sections:[
+    {title:"Lat Pulldown",items:[["Wide grip","15 × 3"],["Close grip","15 × 3"]]},
+    {title:"Exercises",items:[["Seated rowing","15 × 3"],["Hyperextension","15 × 3"],["Bicep curls","20 × 3"],["Pitcher curls","15 × 3"],["Incline bench bicep curls","20 × 3"]]}
+  ]},
+  thursday:{title:"Thursday",tag:"DAY 04 / CARDIO + CORE",subtitle:"Cardio + Core",sections:[
+    {title:"Cardio · 30 min",items:[["Incline treadmill walk","30 min"],["Cycling","30 min"]]},
+    {title:"Core · 3 rounds",items:[["Bicycle Crunches","20 reps"],["Plank","40 sec"],["Leg Raises","15 reps"],["Mountain Climbers","20 reps"]]}
+  ]},
+  friday:{title:"Friday",tag:"DAY 05 / LEGS",subtitle:"Leg training",sections:[
+    {title:"Exercises",items:[["Bodyweight squats","20 × 3"],["Leg press (Wide stance)","20 × 3"],["Leg extensions","20 × 3"],["Leg curls","20 × 3"],["Abductors","30 × 3"],["Calf raises","25 × 2"]]}
+  ]},
+  saturday:{title:"Saturday",tag:"DAY 06 / CARDIO + CORE",subtitle:"Cardio + Core",sections:[
+    {title:"Cardio · 30–35 min",items:[["Brisk walking","30–35 min"],["Cycling","30–35 min"]]},
+    {title:"Core · 3 rounds",items:[["Crunches","20 reps"],["Russian Twists","20 reps"],["Plank","45 sec"],["Leg Raises","15 reps"]]}
+  ]},
+};
+
+const STORAGE_KEY = "vework_completed_v1";
+let completed = {};
+try { completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {}; } catch(e) { completed = {}; }
+
+const homeView = document.getElementById("homeView");
+const detailView = document.getElementById("detailView");
+const content = document.getElementById("workoutContent");
+
+function saveChecks(){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completed)); } catch(e) {}
+}
+function updateHomeStatus(){
+  document.querySelectorAll(".day-card").forEach(button => {
+    const key = button.dataset.day;
+    const day = plan[key];
+    if(!day) return;
+    const total = day.sections.reduce((sum, section) => sum + section.items.length, 0);
+    let done = 0;
+    day.sections.forEach((section, sectionIndex) => {
+      section.items.forEach((item, itemIndex) => {
+        if(completed[`${key}-${sectionIndex}-${itemIndex}`]) done++;
+      });
+    });
+    const isComplete = total > 0 && done === total;
+    button.classList.toggle("is-day-complete", isComplete);
+    const overlay = button.querySelector(".completion-overlay");
+    if(overlay) overlay.textContent = isComplete ? "COMPLETED" : "";
+    button.setAttribute("aria-label", `${day.title}${isComplete ? ", completed" : ""}`);
+  });
+}
+updateHomeStatus();
+function showHome(){
+  detailView.hidden = true;
+  homeView.hidden = false;
+  window.scrollTo({top:0,behavior:"auto"});
+}
+function openDay(key){
+  const day = plan[key];
+  if(!day) return;
+  content.replaceChildren();
+
+  day.sections.forEach((section, sectionIndex) => {
+    const block = document.createElement("section");
+    block.className = "exercise-section";
+    const heading = document.createElement("h2");
+    heading.className = "section-title";
+    heading.textContent = section.title;
+
+    if(sectionIndex === 0){
+      const headingRow = document.createElement("div");
+      headingRow.className = "section-heading-row";
+      const backButton = document.createElement("button");
+      backButton.className = "back-button";
+      backButton.type = "button";
+      backButton.textContent = "← BACK";
+      backButton.addEventListener("click", showHome);
+      headingRow.append(heading, backButton);
+      block.append(headingRow);
+    } else {
+      block.append(heading);
+    }
+
+    const itemsGrid = document.createElement("div");
+    itemsGrid.className = "exercise-grid";
+    section.items.forEach((item, itemIndex) => {
+      const id = `${key}-${sectionIndex}-${itemIndex}`;
+      const card = document.createElement("div");
+      card.className = "exercise-card";
+      const nameWrap = document.createElement("span");
+      nameWrap.className = "exercise-name-wrap";
+      const name = document.createElement("span");
+      name.className = "exercise-name";
+      name.textContent = item[0];
+      const target = document.createElement("span");
+      target.className = "exercise-target";
+      target.textContent = item[1];
+      nameWrap.append(name,target);
+
+      const doneButton = document.createElement("button");
+      doneButton.type = "button";
+      doneButton.className = "exercise-done-button";
+      doneButton.setAttribute("aria-label", `Mark ${item[0]} done`);
+      doneButton.innerHTML = '<span class="done-label">DONE</span><span class="done-check" aria-hidden="true">✓</span>';
+      doneButton.classList.toggle("is-complete", Boolean(completed[id]));
+      doneButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        if(completed[id]) delete completed[id];
+        else completed[id] = true;
+        saveChecks();
+        doneButton.classList.toggle("is-complete", Boolean(completed[id]));
+        doneButton.setAttribute("aria-label", `Mark ${item[0]} ${completed[id] ? "not done" : "done"}`);
+        updateHomeStatus();
+      });
+      card.append(nameWrap,doneButton);
+      itemsGrid.append(card);
+    });
+    block.append(itemsGrid);
+    content.append(block);
+  });
+
+  homeView.hidden = true;
+  detailView.hidden = false;
+  window.scrollTo({top:0,behavior:"auto"});
+}
+
+document.querySelectorAll(".day-card").forEach(button => {
+  button.addEventListener("click", () => openDay(button.dataset.day));
+});
+
+document.getElementById("clearChecks").addEventListener("click", () => {
+  if(!Object.keys(completed).length) return;
+  if(!confirm("Clear every completed tick?")) return;
+  completed = {};
+  saveChecks();
+  updateHomeStatus();
+});
+</script>
+</body>
+</html>
